@@ -38,6 +38,77 @@ jobs:
             src/DisplayManager.cpp \
             -o build/app
 
+      # 🧪 EJECUTAR TESTS Y GENERAR COBERTURA
+      - name: Install dependencies for testing
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y lcov
+
+      - name: Download Google Test
+        run: |
+          if [ ! -d "googletest" ]; then
+            git clone https://github.com/google/googletest.git
+          fi
+
+      - name: Run tests with coverage
+        run: |
+          # Compilar con cobertura
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c src/Evaluation.cpp -o src/Evaluation.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c src/Student.cpp -o src/Student.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c src/ExtraPointsPolicy.cpp -o src/ExtraPointsPolicy.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c src/PolicyManager.cpp -o src/PolicyManager.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c src/GradeCalculator.cpp -o src/GradeCalculator.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c src/InputValidator.cpp -o src/InputValidator.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c src/DisplayManager.cpp -o src/DisplayManager.o
+
+          # Compilar Google Test
+          g++ -std=c++17 -Igoogletest/googletest/include -Igoogletest/googletest \
+            -c googletest/googletest/src/gtest-all.cc -o gtest-all.o
+
+          # Compilar tests
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c tests/EvaluationTest.cpp -o tests/EvaluationTest.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c tests/StudentTest.cpp -o tests/StudentTest.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c tests/ExtraPointsPolicyTest.cpp -o tests/ExtraPointsPolicyTest.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c tests/GradeCalculatorTest.cpp -o tests/GradeCalculatorTest.o
+          g++ -std=c++17 -Wall -Iinclude -Igoogletest/googletest/include --coverage \
+            -c tests/test_main.cpp -o tests/test_main.o
+
+          # Enlazar
+          g++ -o test_runner --coverage \
+            src/Evaluation.o \
+            src/Student.o \
+            src/ExtraPointsPolicy.o \
+            src/PolicyManager.o \
+            src/GradeCalculator.o \
+            src/InputValidator.o \
+            src/DisplayManager.o \
+            tests/EvaluationTest.o \
+            tests/StudentTest.o \
+            tests/ExtraPointsPolicyTest.o \
+            tests/GradeCalculatorTest.o \
+            tests/test_main.o \
+            gtest-all.o \
+            -lpthread
+
+          # Ejecutar tests
+          ./test_runner
+
+          # Generar reporte de cobertura
+          lcov --capture --directory . --output-file coverage.info
+          lcov --remove coverage.info '/usr/*' '*/googletest/*' --output-file coverage.info
+          lcov --list coverage.info
+
       # 🔍 ANALISIS CON SONARQUBE PARA C++
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v3
