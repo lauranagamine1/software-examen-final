@@ -1,0 +1,45 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    name: Build and analyze (C++)
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Recomendado para SonarQube
+
+      - name: Cache SonarQube packages
+        uses: actions/cache@v4
+        with:
+          path: ~/.sonar/cache
+          key: ${{ runner.os }}-sonar
+          restore-keys: ${{ runner.os }}-sonar
+
+      # Build C++ (ajusta estos comandos a tu proyecto)
+      - name: Build C++ project
+        run: |
+          mkdir -p build
+          cd build
+          cmake ..
+          cmake --build .
+
+      # SonarQube scan para C++ usando SonarScanner CLI
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@v3
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
+        with:
+          args: >
+            -Dsonar.projectKey=Backend-Student-36
+            -Dsonar.projectName=backend-simple
+            -Dsonar.sources=src
+            -Dsonar.cfamily.cache.enabled=false

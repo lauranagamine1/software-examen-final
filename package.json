@@ -1,0 +1,22 @@
+{
+  "name": "sistema-calculo-notas",
+  "version": "2.0.0",
+  "description": "Sistema de cálculo de notas finales - UTEC",
+  "scripts": {
+    "test": "bash -c './run_tests.sh'",
+    "test:windows": "run_tests.bat",
+    "compile": "bash -c './compile.sh'",
+    "compile:windows": "compile.bat",
+    "build": "npm run compile",
+    "coverage": "bash -c './run_coverage.sh'"
+  },
+  "keywords": [
+    "grades",
+    "calculator",
+    "utec",
+    "cpp"
+  ],
+  "author": "UTEC",
+  "license": "MIT",
+  "devDependencies": {}
+}

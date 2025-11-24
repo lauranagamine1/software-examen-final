@@ -1,6 +1,6 @@
 # Sistema de Cálculo de Notas Finales - UTEC
 
-Sistema implementado en C++ para calcular la nota final de estudiantes considerando evaluaciones ponderadas, asistencia mínima y políticas de puntos extra.
+Sistema implementado en C++ usando programación orientada a objetos para calcular la nota final de estudiantes considerando evaluaciones ponderadas, asistencia mínima y políticas de puntos extra.
 
 ## Descripción
 
@@ -10,12 +10,97 @@ Este programa permite a los docentes de Ingeniería de Software en UTEC:
 - Aplicar políticas de puntos extra según el año académico
 - Calcular automáticamente la nota final con detalle completo del cálculo
 
+## Arquitectura del Sistema
+
+El sistema está diseñado con **bajo acoplamiento** y **alta cohesión**, siguiendo principios SOLID y buenas prácticas de POO.
+
+### Estructura de Directorios
+
+```
+.
+├── include/              # Archivos de cabecera (.h)
+│   ├── Evaluation.h
+│   ├── Student.h
+│   ├── ExtraPointsPolicy.h
+│   ├── PolicyManager.h
+│   ├── GradeCalculator.h
+│   ├── InputValidator.h
+│   └── DisplayManager.h
+├── src/                  # Implementaciones (.cpp)
+│   ├── Evaluation.cpp
+│   ├── Student.cpp
+│   ├── ExtraPointsPolicy.cpp
+│   ├── PolicyManager.cpp
+│   ├── GradeCalculator.cpp
+│   ├── InputValidator.cpp
+│   └── DisplayManager.cpp
+├── main.cpp              # Punto de entrada del programa
+├── compile.bat           # Script de compilación para Windows
+├── compile.sh            # Script de compilación para Linux/Mac
+└── Makefile              # Makefile para compilación con make
+```
+
+### Clases y Responsabilidades
+
+#### 1. Evaluation (Entidad del Dominio)
+- **Responsabilidad**: Encapsular los datos de una evaluación individual
+- **Atributos**: nombre, nota, peso porcentual
+- **Métodos clave**: `calculateWeightedContribution()`
+- **Acoplamiento**: Ninguno (clase independiente)
+- **Cohesión**: Alta - solo maneja datos de evaluación
+
+#### 2. Student (Entidad del Dominio)
+- **Responsabilidad**: Gestionar información del estudiante y sus evaluaciones
+- **Atributos**: código, evaluaciones, asistencia
+- **Métodos clave**: `addEvaluation()`, `calculateTotalWeight()`
+- **Acoplamiento**: Bajo - solo depende de Evaluation
+- **Cohesión**: Alta - solo maneja datos del estudiante
+
+#### 3. ExtraPointsPolicy (Entidad del Dominio)
+- **Responsabilidad**: Encapsular reglas de otorgamiento de puntos extra
+- **Atributos**: año académico, puntos, requisitos
+- **Métodos clave**: `studentQualifies()`
+- **Acoplamiento**: Ninguno (clase independiente)
+- **Cohesión**: Alta - solo maneja políticas
+
+#### 4. PolicyManager (Gestor de Colecciones)
+- **Responsabilidad**: Gestionar colección de políticas de puntos extra
+- **Métodos clave**: `findPolicyByYear()`, `addPolicy()`
+- **Acoplamiento**: Bajo - solo depende de ExtraPointsPolicy
+- **Cohesión**: Alta - solo gestiona políticas
+
+#### 5. GradeCalculator (Lógica de Negocio)
+- **Responsabilidad**: Centralizar toda la lógica de cálculo de notas
+- **Métodos clave**: `calculateFinalGrade()`, `hasPassedCourse()`
+- **Acoplamiento**: Medio - depende de Student y ExtraPointsPolicy (solo lectura)
+- **Cohesión**: Alta - solo realiza cálculos de notas
+
+#### 6. InputValidator (Utilidad)
+- **Responsabilidad**: Validar y procesar entradas del usuario
+- **Métodos clave**: `readValidatedInt()`, `readValidatedDouble()`, `readYesNo()`
+- **Acoplamiento**: Ninguno (utilidad independiente)
+- **Cohesión**: Alta - solo maneja validación de entrada
+
+#### 7. DisplayManager (Presentación)
+- **Responsabilidad**: Formatear y mostrar información en consola
+- **Métodos clave**: `displayGradeCalculationDetail()`, `displayEvaluations()`
+- **Acoplamiento**: Bajo - recibe objetos pero solo para lectura
+- **Cohesión**: Alta - solo maneja visualización
+
+### Principios de Diseño Aplicados
+
+1. **Single Responsibility Principle**: Cada clase tiene una única responsabilidad bien definida
+2. **Open/Closed Principle**: Las clases pueden extenderse sin modificar el código existente
+3. **Dependency Inversion**: Las dependencias apuntan hacia abstracciones
+4. **Separación de Concerns**: Lógica de negocio, presentación y validación están separadas
+5. **Encapsulación**: Atributos privados con acceso controlado mediante getters/setters
+
 ## Requerimientos Funcionales Implementados
 
 - **RF1**: Registro de estudiante por código
 - **RF2**: Registro/Revisión de hasta 10 evaluaciones con validación de pesos
-- **RF3**: Registro de asistencia mínima (hasReachedMinimumClasses)
-- **RF4**: Consulta de política de puntos extra por año académico (allYearsTeachers)
+- **RF3**: Registro de asistencia mínima (hasReachedMinimumAttendance)
+- **RF4**: Consulta de política de puntos extra por año académico
 - **RF5**: Cálculo de nota final considerando:
   - Promedio ponderado de evaluaciones
   - Penalización por inasistencias (nota = 0 si no cumple asistencia)
@@ -28,50 +113,44 @@ Este programa permite a los docentes de Ingeniería de Software en UTEC:
 - **RNF2**: Diseño sin variables globales compartidas, preparado para hasta 50 usuarios concurrentes
 - **RNF3**: Código modular y bien organizado con funciones específicas para cada tarea
 
-## Estructura del Código
-
-### Estructuras de Datos
-- `Evaluation`: Representa una evaluación individual (nombre, nota, peso)
-- `ExamsStudents`: Almacena las evaluaciones y asistencia de un estudiante
-- `ExtraPointsPolicy`: Define políticas de puntos extra por año académico
-- `AllYearsTeachers`: Colección de políticas para diferentes años
-
-### Funciones Principales
-- `registerEvaluations()`: Registro de evaluaciones con validación
-- `registerAttendance()`: Registro de asistencia mínima
-- `calculateWeightedAverage()`: Cálculo del promedio ponderado
-- `applyAttendancePenalty()`: Aplicación de penalización por inasistencias
-- `qualifiesForExtraPoints()`: Verificación de elegibilidad para puntos extra
-- `calculateFinalGrade()`: Cálculo completo de nota final
-- `displayGradeCalculationDetail()`: Visualización detallada del cálculo
-
 ## Compilación y Ejecución
 
-### En Windows:
+### Opción 1: Usando scripts de compilación
+
+#### En Windows:
 ```bash
-# Compilar
 compile.bat
-
-# O manualmente:
-g++ -std=c++17 -Wall -o calculo_notas.exe main.cpp
-
-# Ejecutar
 calculo_notas.exe
 ```
 
-### En Linux/Mac:
+#### En Linux/Mac:
 ```bash
-# Dar permisos de ejecución al script
 chmod +x compile.sh
-
-# Compilar
 ./compile.sh
-
-# O manualmente:
-g++ -std=c++17 -Wall -o calculo_notas main.cpp
-
-# Ejecutar
 ./calculo_notas
+```
+
+### Opción 2: Usando Makefile
+
+```bash
+make              # Compila el proyecto
+make run          # Compila y ejecuta
+make clean        # Limpia archivos compilados
+```
+
+### Opción 3: Compilación manual
+
+```bash
+g++ -std=c++17 -Wall -Iinclude \
+    main.cpp \
+    src/Evaluation.cpp \
+    src/Student.cpp \
+    src/ExtraPointsPolicy.cpp \
+    src/PolicyManager.cpp \
+    src/GradeCalculator.cpp \
+    src/InputValidator.cpp \
+    src/DisplayManager.cpp \
+    -o calculo_notas
 ```
 
 ## Uso del Programa
@@ -147,13 +226,47 @@ NOTA FINAL: 16.60 - APROBADO
 
 ## Diseño para Concurrencia
 
-El código está diseñado sin variables globales compartidas y con lógica independiente, permitiendo:
-- Múltiples instancias del programa ejecutándose simultáneamente
-- Preparación para implementación multi-hilo en el futuro
+El código está diseñado con:
+- Sin variables globales compartidas
+- Lógica de cálculo independiente del estado global
+- Separación clara de responsabilidades
+- Preparado para múltiples instancias simultáneas
 - Soporte para hasta 50 usuarios concurrentes según RNF2
 
+## Requisitos del Sistema
 
-## Notas Técnicas
+- Compilador C++ con soporte para C++17 o superior
+- GCC/G++ 7.0+ o compatible
+- Sistema operativo: Windows, Linux o macOS
 
-- Los cálculos usan precisión de punto flotante con formato de 2 decimales
+## Mejoras de Diseño Implementadas
 
+### Comparado con la versión anterior:
+
+1. **Uso de Clases en lugar de Structs**: Encapsulación completa con atributos privados
+2. **Separación en Archivos .h y .cpp**: Mejor organización y tiempos de compilación
+3. **Bajo Acoplamiento**: Cada clase tiene dependencias mínimas y bien definidas
+4. **Alta Cohesión**: Cada clase tiene una responsabilidad única y clara
+5. **Comentarios Significativos**: Documentación clara de responsabilidades y propósito
+6. **Facilidad de Mantenimiento**: Cambios en una clase no afectan innecesariamente a otras
+7. **Facilidad de Testing**: Cada clase puede ser probada independientemente
+8. **Escalabilidad**: Fácil agregar nuevas funcionalidades sin modificar código existente
+
+## Diagrama de Dependencias
+
+```
+main.cpp
+    |
+    +-- Student (depende de Evaluation)
+    +-- PolicyManager (depende de ExtraPointsPolicy)
+    +-- GradeCalculator (depende de Student, ExtraPointsPolicy)
+    +-- InputValidator (independiente)
+    +-- DisplayManager (depende de Student, ExtraPointsPolicy, GradeCalculator)
+
+ExtraPointsPolicy (independiente)
+Evaluation (independiente)
+```
+
+## Soporte
+
+Para dudas o problemas con el sistema, contactar al equipo de Ingeniería de Software de UTEC.

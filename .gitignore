@@ -3,18 +3,31 @@
 *.out
 calculo_notas
 calculo_notas.exe
+test_runner
+test_runner.exe
 
 # Archivos objeto
 *.o
 *.obj
-
-# Archivos de compilación
+src/*.o
+tests/*.o
 *.a
 *.lib
+
+# Archivos de cobertura
+*.gcov
+*.gcda
+*.gcno
+coverage.info
+coverage_report/
+
+# Archivos de compilación
+*.d
 
 # Archivos de depuración
 *.pdb
 *.ilk
+*.dSYM/
 
 # Archivos temporales
 *.tmp
@@ -28,10 +41,23 @@ calculo_notas.exe
 *.cbp
 *.depend
 *.layout
+*.workspace
 
 # Archivos del sistema
 .DS_Store
 Thumbs.db
+desktop.ini
 
 # Archivos de log
 *.log
+
+# Directorios de build
+build/
+bin/
+obj/
+
+# Google Test
+googletest/
+
+# Node modules (para package.json)
+node_modules/
