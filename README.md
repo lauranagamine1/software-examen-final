@@ -1,5 +1,7 @@
 # Sistema de Cálculo de Notas Finales - UTEC
 
+SONAR: http://213.199.42.57:9002/dashboard?id=Backend-Student-36
+
 Sistema implementado en C++ usando programación orientada a objetos para calcular la nota final de estudiantes considerando evaluaciones ponderadas, asistencia mínima y políticas de puntos extra.
 
 ## Descripción

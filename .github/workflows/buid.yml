@@ -104,9 +104,9 @@ jobs:
           # Ejecutar tests
           ./test_runner
 
-          # Generar reporte de cobertura
-          lcov --capture --directory . --output-file coverage.info
-          lcov --remove coverage.info '/usr/*' '*/googletest/*' --output-file coverage.info
+          # Generar reporte de cobertura (con flags para ignorar incompatibilidades menores)
+          lcov --capture --directory . --output-file coverage.info --ignore-errors mismatch,gcov --rc geninfo_unexecuted_blocks=0
+          lcov --remove coverage.info '/usr/*' '*/googletest/*' --output-file coverage.info --ignore-errors unused
           lcov --list coverage.info
 
       # 🔍 ANALISIS CON SONARQUBE PARA C++
