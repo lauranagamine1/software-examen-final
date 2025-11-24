@@ -13,10 +13,10 @@
     </parent>
 
     <groupId>com.example</groupId>
-    <artifactId>backend-simple</artifactId>
+    <artifactId>laura-nagamine-backend</artifactId>
     <version>1.0.0</version>
-    <name>backend-simple</name>
-    <description>Backend simple con Spring Boot</description>
+    <name>laura-nagamine-backend</name>
+    <description>Laura Nagamine Backend Project</description>
 
     <properties>
         <java.version>17</java.version>
