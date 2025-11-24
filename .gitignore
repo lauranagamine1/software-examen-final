@@ -1,52 +1,37 @@
-HELP.md
-target/
-!.mvn/wrapper/maven-wrapper.jar
-!**/src/main/**/target/
-!**/src/test/**/target/
+# Ejecutables
+*.exe
+*.out
+calculo_notas
+calculo_notas.exe
 
-### STS ###
-.apt_generated
-.classpath
-.factorypath
-.project
-.settings
-.springBeans
-.sts4-cache
+# Archivos objeto
+*.o
+*.obj
 
-### IntelliJ IDEA ###
-.idea
-*.iws
-*.iml
-*.ipr
+# Archivos de compilación
+*.a
+*.lib
 
-### NetBeans ###
-/nbproject/private/
-/nbbuild/
-/dist/
-/nbdist/
-/.nb-gradle/
-build/
-!**/src/main/**/build/
-!**/src/test/**/build/
+# Archivos de depuración
+*.pdb
+*.ilk
 
-### VS Code ###
+# Archivos temporales
+*.tmp
+*.temp
+*.swp
+*~
+
+# Directorios de IDEs
 .vscode/
+.idea/
+*.cbp
+*.depend
+*.layout
 
-### Environment ###
-.env.local
-
-### Docker ###
-*.log
-
-### Maven ###
-.mvn/
-mvnw
-mvnw.cmd
-
-### OS ###
+# Archivos del sistema
 .DS_Store
 Thumbs.db
 
-### SonarQube ###
-.sonar/
-.scannerwork/
+# Archivos de log
+*.log

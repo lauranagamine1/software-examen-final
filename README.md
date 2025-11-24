@@ -1,188 +1,176 @@
-# Backend Simple - Spring Boot con SonarQube
+# Sistema de Cálculo de Notas Finales - UTEC
 
-Backend simple en Java 17 con Spring Boot y Maven, integrado con SonarQube para análisis de código.
+Sistema implementado en C++ para calcular la nota final de estudiantes considerando evaluaciones ponderadas, asistencia mínima y políticas de puntos extra.
 
-## Requisitos
+## Descripción
 
-- Docker y Docker Compose
-- Java 17 (para desarrollo local)
-- Maven 3.x (para desarrollo local)
+Este programa permite a los docentes de Ingeniería de Software en UTEC:
+- Registrar hasta 10 evaluaciones por estudiante con sus respectivas notas y pesos
+- Verificar el cumplimiento de asistencia mínima
+- Aplicar políticas de puntos extra según el año académico
+- Calcular automáticamente la nota final con detalle completo del cálculo
 
-## Estructura del Proyecto
+## Requerimientos Funcionales Implementados
 
-```
-.
-├── src/
-│   └── main/
-│       ├── java/com/example/backend/
-│       │   ├── BackendApplication.java
-│       │   └── controller/
-│       │       └── HelloController.java
-│       └── resources/
-│           └── application.properties
-├── docker-compose.yml
-├── Dockerfile
-├── .env
-└── pom.xml
-```
+- **RF1**: Registro de estudiante por código
+- **RF2**: Registro/Revisión de hasta 10 evaluaciones con validación de pesos
+- **RF3**: Registro de asistencia mínima (hasReachedMinimumClasses)
+- **RF4**: Consulta de política de puntos extra por año académico (allYearsTeachers)
+- **RF5**: Cálculo de nota final considerando:
+  - Promedio ponderado de evaluaciones
+  - Penalización por inasistencias (nota = 0 si no cumple asistencia)
+  - Aplicación de puntos extra según política vigente
+- **RF6**: Visualización detallada del cálculo paso a paso
 
-## Configuración
+## Requerimientos No Funcionales Implementados
 
-Las variables de entorno están en el archivo `.env`:
+- **RNF1**: Límite de 10 evaluaciones por estudiante usando `vector` con capacidad reservada
+- **RNF2**: Diseño sin variables globales compartidas, preparado para hasta 50 usuarios concurrentes
+- **RNF3**: Código modular y bien organizado con funciones específicas para cada tarea
 
-```properties
-# PostgreSQL Configuration
-POSTGRES_DB=sonarqube
-POSTGRES_USER=sonar
-POSTGRES_PASSWORD=sonar123
+## Estructura del Código
 
-# Spring Boot Configuration
-SERVER_PORT=8080
+### Estructuras de Datos
+- `Evaluation`: Representa una evaluación individual (nombre, nota, peso)
+- `ExamsStudents`: Almacena las evaluaciones y asistencia de un estudiante
+- `ExtraPointsPolicy`: Define políticas de puntos extra por año académico
+- `AllYearsTeachers`: Colección de políticas para diferentes años
 
-# SonarQube Configuration
-SONAR_PROJECT_KEY=backend-simple
-SONAR_PROJECT_NAME=Backend Simple
-SONAR_HOST_URL=http://localhost:9000
-```
+### Funciones Principales
+- `registerEvaluations()`: Registro de evaluaciones con validación
+- `registerAttendance()`: Registro de asistencia mínima
+- `calculateWeightedAverage()`: Cálculo del promedio ponderado
+- `applyAttendancePenalty()`: Aplicación de penalización por inasistencias
+- `qualifiesForExtraPoints()`: Verificación de elegibilidad para puntos extra
+- `calculateFinalGrade()`: Cálculo completo de nota final
+- `displayGradeCalculationDetail()`: Visualización detallada del cálculo
 
-## Levantar los Servicios
+## Compilación y Ejecución
 
-### 1. Iniciar todos los servicios
-
+### En Windows:
 ```bash
-docker-compose up -d
+# Compilar
+compile.bat
+
+# O manualmente:
+g++ -std=c++17 -Wall -o calculo_notas.exe main.cpp
+
+# Ejecutar
+calculo_notas.exe
 ```
 
-Esto levantará:
-- PostgreSQL (puerto 5432)
-- SonarQube (puerto 9000)
-- Backend Spring Boot (puerto 8080)
-
-### 2. Verificar el estado
-
+### En Linux/Mac:
 ```bash
-docker-compose ps
+# Dar permisos de ejecución al script
+chmod +x compile.sh
+
+# Compilar
+./compile.sh
+
+# O manualmente:
+g++ -std=c++17 -Wall -o calculo_notas main.cpp
+
+# Ejecutar
+./calculo_notas
 ```
 
-### 3. Ver logs
+## Uso del Programa
 
-```bash
-docker-compose logs -f backend
-docker-compose logs -f sonarqube
-```
+1. **Inicio**: El programa solicita el código del estudiante
+2. **Evaluaciones**: Registra cada evaluación con:
+   - Nombre (PC1, Parcial, Final, etc.)
+   - Nota obtenida (0-20)
+   - Peso porcentual (0-100%)
+3. **Asistencia**: Indica si cumplió con la asistencia mínima (S/N)
+4. **Año Académico**: Ingresa el año académico para consultar política de puntos extra (ej: 2025-1)
+5. **Resultado**: El sistema calcula y muestra:
+   - Promedio ponderado
+   - Penalizaciones aplicadas
+   - Puntos extra otorgados
+   - Nota final con detalle completo
 
-## Uso
-
-### Endpoint disponible
-
-**GET** `/api/hello`
-
-Devuelve: `"hola mundo"`
-
-**Ejemplo con curl:**
-
-```bash
-curl http://localhost:8080/api/hello
-```
-
-**Ejemplo con navegador:**
+## Ejemplo de Uso
 
 ```
-http://localhost:8080/api/hello
+Código de estudiante: U202012345
+
+Evaluaciones:
+- PC1: 15.0 (20%)
+- PC2: 14.0 (20%)
+- Parcial: 16.0 (30%)
+- Final: 17.0 (30%)
+
+Asistencia mínima: SÍ
+Año académico: 2025-1
+
+RESULTADO:
+Promedio ponderado: 15.60
+Penalización: Ninguna
+Puntos extra: +1.0 (cumple requisitos)
+NOTA FINAL: 16.60 - APROBADO
 ```
 
-## SonarQube
+## Políticas de Puntos Extra Predefinidas
 
-### Acceso a SonarQube
+### 2025-1
+- Puntos extra: 1.0
+- Nota mínima: 10.5
+- Requiere asistencia: SÍ
 
-1. Abre tu navegador en: `http://localhost:9000`
-2. Credenciales por defecto:
-   - Usuario: `admin`
-   - Contraseña: `admin` (te pedirá cambiarla)
+### 2025-2
+- Puntos extra: 1.5
+- Nota mínima: 11.0
+- Requiere asistencia: SÍ
 
-### Analizar el código con SonarQube
+### 2024-2
+- Sin puntos extra disponibles
 
-#### Opción 1: Desde el contenedor
+## Reglas Importantes
 
-```bash
-docker exec -it backend-simple mvn clean verify sonar:sonar \
-  -Dsonar.projectKey=backend-simple \
-  -Dsonar.host.url=http://sonarqube:9000 \
-  -Dsonar.login=<tu-token>
-```
+1. **Asistencia Mínima**: Si el estudiante NO alcanza la asistencia mínima (70%), su nota final será 0 automáticamente, sin importar sus calificaciones.
 
-#### Opción 2: Desde tu máquina local
+2. **Puntos Extra**: Solo se otorgan si el estudiante:
+   - Alcanza la nota mínima requerida
+   - Cumple con la asistencia mínima (si es requerida por la política)
 
-```bash
-mvn clean verify sonar:sonar \
-  -Dsonar.projectKey=backend-simple \
-  -Dsonar.host.url=http://localhost:9000 \
-  -Dsonar.login=<tu-token>
-```
+3. **Nota Máxima**: La nota final no puede exceder 20 puntos, incluso con puntos extra.
 
-### Generar token en SonarQube
+4. **Aprobación**: Se requiere una nota final de al menos 10.5 para aprobar el curso.
 
-1. Ve a: `http://localhost:9000/account/security`
-2. Genera un nuevo token
-3. Usa ese token en el comando `-Dsonar.login=<tu-token>`
+## Validaciones Implementadas
 
-## Desarrollo Local
+- Notas en rango válido (0-20)
+- Pesos porcentuales válidos (0-100%)
+- Máximo 10 evaluaciones por estudiante
+- Advertencia si los pesos no suman exactamente 100%
+- Validación de entradas de usuario con manejo de errores
 
-### Compilar y ejecutar sin Docker
+## Diseño para Concurrencia
 
-```bash
-mvn clean install
-mvn spring-boot:run
-```
+El código está diseñado sin variables globales compartidas y con lógica independiente, permitiendo:
+- Múltiples instancias del programa ejecutándose simultáneamente
+- Preparación para implementación multi-hilo en el futuro
+- Soporte para hasta 50 usuarios concurrentes según RNF2
 
-### Ejecutar tests
+## Requisitos del Sistema
 
-```bash
-mvn test
-```
+- Compilador C++ con soporte para C++17 o superior
+- GCC/G++ 7.0+ o compatible
+- Sistema operativo: Windows, Linux o macOS
 
-### Generar reporte de cobertura (JaCoCo)
+## Notas Técnicas
 
-```bash
-mvn clean test jacoco:report
-```
+- El programa usa `std::vector` en lugar de arrays fijos para mayor flexibilidad
+- Se implementa validación robusta de entrada con limpieza de buffer
+- Los cálculos usan precisión de punto flotante con formato de 2 decimales
+- La estructura modular facilita futuras extensiones y mantenimiento
 
-El reporte estará en: `target/site/jacoco/index.html`
+## Soporte
 
-## Detener los Servicios
+Para dudas o problemas con el sistema, contactar al equipo de Ingeniería de Software de UTEC.
 
-```bash
-docker-compose down
-```
+---
 
-Para eliminar también los volúmenes:
-
-```bash
-docker-compose down -v
-```
-
-## Comandos Útiles
-
-### Reconstruir el backend
-
-```bash
-docker-compose up -d --build backend
-```
-
-### Ver logs en tiempo real
-
-```bash
-docker-compose logs -f
-```
-
-### Reiniciar un servicio específico
-
-```bash
-docker-compose restart backend
-```
-
-## Notas
-
-- La primera vez que inicies SonarQube tardará algunos minutos en estar disponible
-- El backend esperará a que SonarQube esté listo antes de iniciarse (healthcheck)
-- Los datos de PostgreSQL y SonarQube se persisten en volúmenes de Docker
+**Desarrollado para**: Curso de Ingeniería de Software - UTEC  
+**Versión**: 1.0  
+**Año**: 2025
