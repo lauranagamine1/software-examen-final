@@ -152,25 +152,8 @@ El código está diseñado sin variables globales compartidas y con lógica inde
 - Preparación para implementación multi-hilo en el futuro
 - Soporte para hasta 50 usuarios concurrentes según RNF2
 
-## Requisitos del Sistema
-
-- Compilador C++ con soporte para C++17 o superior
-- GCC/G++ 7.0+ o compatible
-- Sistema operativo: Windows, Linux o macOS
 
 ## Notas Técnicas
 
-- El programa usa `std::vector` en lugar de arrays fijos para mayor flexibilidad
-- Se implementa validación robusta de entrada con limpieza de buffer
 - Los cálculos usan precisión de punto flotante con formato de 2 decimales
-- La estructura modular facilita futuras extensiones y mantenimiento
 
-## Soporte
-
-Para dudas o problemas con el sistema, contactar al equipo de Ingeniería de Software de UTEC.
-
----
-
-**Desarrollado para**: Curso de Ingeniería de Software - UTEC  
-**Versión**: 1.0  
-**Año**: 2025
