@@ -23,15 +23,16 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # Build C++ (ajusta estos comandos a tu proyecto)
+      # 🔧 COMPILAR C++ (ajusta esto según tus archivos)
       - name: Build C++ project
         run: |
           mkdir -p build
-          cd build
-          cmake ..
-          cmake --build .
+          # Si solo tienes un main.cpp en la raíz:
+          g++ -std=c++17 main.cpp -o build/app
+          # Si tienes varios .cpp, podrías usar:
+          # g++ -std=c++17 $(find . -name '*.cpp' ! -path './build/*') -o build/app
 
-      # SonarQube scan para C++ usando SonarScanner CLI
+      # 🔍 ANALISIS CON SONARQUBE PARA C++
       - name: SonarQube Scan
         uses: sonarsource/sonarqube-scan-action@v3
         env:
@@ -41,5 +42,5 @@ jobs:
           args: >
             -Dsonar.projectKey=Backend-Student-36
             -Dsonar.projectName=backend-simple
-            -Dsonar.sources=src
+            -Dsonar.sources=.
             -Dsonar.cfamily.cache.enabled=false
