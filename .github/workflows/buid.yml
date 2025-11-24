@@ -23,11 +23,19 @@ jobs:
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
 
-      # 🔧 COMPILAR C++ (ajusta esto según tus archivos)
+      # Instalar SonarQube build-wrapper para C++
+      - name: Install SonarQube build-wrapper
+        run: |
+          mkdir -p $HOME/.sonar
+          curl -sSLo $HOME/.sonar/build-wrapper-linux-x86.zip https://sonarcloud.io/static/cpp/build-wrapper-linux-x86.zip
+          unzip -o $HOME/.sonar/build-wrapper-linux-x86.zip -d $HOME/.sonar/
+          echo "$HOME/.sonar/build-wrapper-linux-x86" >> $GITHUB_PATH
+
+      # 🔧 COMPILAR C++ con build-wrapper
       - name: Build C++ project
         run: |
           mkdir -p build
-          g++ -std=c++17 -Wall -Iinclude \
+          build-wrapper-linux-x86-64 --out-dir build_wrapper_output g++ -std=c++17 -Wall -Iinclude \
             main.cpp \
             src/Evaluation.cpp \
             src/Student.cpp \
