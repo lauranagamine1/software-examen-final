@@ -272,3 +272,100 @@ Evaluation (independiente)
 ## Soporte
 
 Para dudas o problemas con el sistema, contactar al equipo de Ingeniería de Software de UTEC.
+
+## Reporte de Cobertura y Análisis
+
+### Reporte de Coverage en Terminal
+
+```
+======================================
+   REPORTE DE COVERAGE EN TERMINAL
+========================================
+
+RESUMEN DE COBERTURA:
+
+------------------------------------------------------------------------------
+                           GCC Code Coverage Report
+Directory: .
+------------------------------------------------------------------------------
+File                                       Lines    Exec  Cover   Missing
+------------------------------------------------------------------------------
+include/Evaluation.h                           0       0    --%
+include/ExtraPointsPolicy.h                    0       0    --%
+include/GradeCalculator.h                      0       0    --%
+include/Student.h                              0       0    --%
+src/DisplayManager.cpp                       104       0     0%   7,9-14,16-18,20-21,23-26,28-33,35,37-38,40-42,45-47,49-57,59,65-67,69,71,73,76-82,84-86,89-91,93-97,99-100,103-111,113-123,125-126,129-131,133-136,138-139,141-143,145-147
+src/Evaluation.cpp                            20      20   100%
+src/ExtraPointsPolicy.cpp                     25      25   100%
+src/GradeCalculator.cpp                       90      85    94%   66-67,70-71,95
+src/InputValidator.cpp                        37       0     0%   5,7-10,12-13,16,18,20-23,25,27,30,33,35-38,40,42,45-50,52,54,56-59,61,63
+src/PolicyManager.cpp                         24       0     0%   3-5,7-10,12-15,17-19,21-24,27-28,30-31,34-35
+src/Student.cpp                               39      39   100%
+------------------------------------------------------------------------------
+TOTAL                                        339     169    49%
+------------------------------------------------------------------------------
+
+Generando reporte XML para SonarQube...
+Reporte XML generado: coverage.xml
+```
+
+### Análisis Estático (Code Smells)
+
+```
+========================================
+   ANÁLISIS ESTÁTICO (CODE SMELLS)
+========================================
+
+Ejecutando cppcheck...
+
+Resultados de cppcheck:
+
+  Errores encontrados: 10
+
+  Errores críticos:
+    <errors>
+        <error id="returnByReference" severity="performance" msg="Function &apos;getName()&apos; should return member &apos;name&apos; by const reference." verbose="Function &apos;getName()&apos; should return member &apos;name&apos; by const reference." file0="src/Evaluation.cpp">
+        <error id="returnByReference" severity="performance" msg="Function &apos;getAcademicYear()&apos; should return member &apos;academicYear&apos; by const reference." verbose="Function &apos;getAcademicYear()&apos; should return member &apos;academicYear&apos; by const reference." file0="src/ExtraPointsPolicy.cpp">
+        <error id="returnByReference" severity="performance" msg="Function &apos;getPenaltyReason()&apos; should return member &apos;penaltyReason&apos; by const reference." verbose="Function &apos;getPenaltyReason()&apos; should return member &apos;penaltyReason&apos; by const reference." file0="src/GradeCalculator.cpp">
+        <error id="returnByReference" severity="performance" msg="Function &apos;getExtraPointsReason()&apos; should return member &apos;extraPointsReason&apos; by const reference." verbose="Function &apos;getExtraPointsReason()&apos; should return member &apos;extraPointsReason&apos; by const reference." file0="src/GradeCalculator.cpp">
+
+  Reporte completo guardado en: cppcheck_report.xml
+```
+
+### Estadísticas del Código
+
+```
+========================================
+   ESTADÍSTICAS DEL CÓDIGO
+========================================
+
+Metricas basicas:
+
+  Archivos fuente:
+     - Archivos .cpp: 7
+     - Archivos .h: 7
+     - Total lineas: 848
+
+  Estructura del codigo:
+     - Clases: 8
+     - Funciones (aprox): 104
+
+  Tests:
+     - Archivos de test: 4
+```
+
+### Resumen Final de Cobertura
+
+```
+========================================
+   RESUMEN FINAL DE COBERTURA
+========================================
+
+COBERTURA TOTAL: 49%
+  - Líneas ejecutadas: 169
+  - Líneas totales: 339
+```
+
+**Nota**: Para obtener reportes más detallados, instala `gcovr`:
+- macOS: `brew install gcovr`
+- Linux: `pip install gcovr` o `apt-get install gcovr`
